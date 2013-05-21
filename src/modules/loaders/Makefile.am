@@ -30,6 +30,9 @@ endif
 if BUILD_ID3_LOADER
 ID3_L                = id3.la
 endif
+if BUILD_WEBP_LOADER
+WEBP_L                = webp.la
+endif
 
 pkg_LTLIBRARIES      = \
 $(JPEG_L) \
@@ -39,6 +42,7 @@ $(GIF_L) \
 $(ZLIB_L) \
 $(BZ2_L) \
 $(ID3_L) \
+$(WEBP_L) \
 pnm.la \
 argb.la \
 bmp.la \
@@ -113,3 +117,8 @@ lbm_la_SOURCES       = loader_lbm.c
 lbm_la_LDFLAGS       = -module -avoid-version
 lbm_la_LIBADD        = $(top_builddir)/src/lib/libImlib2.la
 lbm_la_LIBTOOLFLAGS = --tag=disable-static
+
+webp_la_SOURCES       = loader_webp.c
+webp_la_LDFLAGS       = -module -avoid-version
+webp_la_LIBADD        = @WEBPLIBS@ $(top_builddir)/src/lib/libImlib2.la
+webp_la_LIBTOOLFLAGS = --tag=disable-static

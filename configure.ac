@@ -191,6 +191,51 @@ fi
 AM_CONDITIONAL(BUILD_JPEG_LOADER, test "$jpeg_ok" = yes)
 AC_SUBST(JPEGLIBS)
 
+AC_MSG_CHECKING(whether to enable webp support)
+AC_ARG_WITH([webp],
+  [AC_HELP_STRING([--without-webp], [Disable WEBP image loader])],
+  [
+   if test "$withval" = no ; then
+     webp_loader=no
+   else
+     webp_loader=yes
+   fi
+  ],
+  [ webp_loader=auto ]
+)
+AC_MSG_RESULT($webp_loader)
+
+if test "$webp_loader" != no ; then
+  AC_CHECK_LIB(webp, WebPDecodeBGRA,
+    webp_ok=yes,
+    webp_ok=no,
+    )
+  if test "$webp_ok" = yes; then
+    AC_MSG_CHECKING([for webplib.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <webp/decode.h>],
+    webp_ok=yes,
+    webp_ok=no)
+    AC_MSG_RESULT($webp_ok)
+    if test "$webp_ok" = yes; then
+      WEBPLIBS="-lwebp"
+    fi
+  fi
+  if test "$webp_ok" = no ; then
+    if test "$webp_loader" = yes ; then
+      AC_MSG_ERROR(WEBP support was requested but system does not support it)
+    else
+      AC_MSG_WARN(*** Native WEBP support will not be built (WEBP not found) ***)
+    fi
+  fi
+else
+  webp_ok=no
+fi
+AM_CONDITIONAL(BUILD_WEBP_LOADER, test "$webp_ok" = yes)
+AC_SUBST(WEBPLIBS)
 
 
 AC_MSG_CHECKING(whether to enable png support)
@@ -217,7 +262,6 @@ else
   png_ok="no"
 fi
 AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
-
 
 
 AC_MSG_CHECKING(whether to enable tiff support)
@@ -550,6 +594,7 @@ echo "  ZLIB....................: $zlib_ok"
 echo "  BZIP2...................: $bz2_ok"
 echo "  ID3.....................: $id3_ok"
 echo "  X.......................: $have_x"
+echo "  WEBP....................: $webp_ok"
 echo
 echo
 echo "Use X86 MMX for speed.....: $mmx"

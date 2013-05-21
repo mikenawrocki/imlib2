@@ -211,4 +211,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files loader_id3
 %attr(755,root,root) %{_libdir}/imlib2/loaders/id3.so
 
+%files loader_webp
+%attr(755,root,root) %{_libdir}/imlib2/loaders/webp.so
+
 %changelog
